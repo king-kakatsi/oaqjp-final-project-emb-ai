@@ -20,22 +20,30 @@ def emotion_detector(text_to_analyse):
     )
     headers = {"grpc-metadata-mm-model-id": MODEL_ID}
     payload = {"raw_document": {"text": text_to_analyse}}
+    none_result = {
+        "anger": None,
+        "disgust": None,
+        "fear": None,
+        "joy": None,
+        "sadness": None,
+        "dominant_emotion": None,
+    }
 
-    response = requests.post(url, json=payload, headers=headers, timeout=30)
+    try:
+        response = requests.post(
+            url, json=payload, headers=headers, timeout=10
+        )
+    except requests.exceptions.RequestException:
+        return none_result
 
-    if response.status_code == 400:
-        return {
-            "anger": None,
-            "disgust": None,
-            "fear": None,
-            "joy": None,
-            "sadness": None,
-            "dominant_emotion": None,
-        }
+    if response.status_code != 200:
+        return none_result
 
-    formatted_response = response.json()
-
-    emotions = formatted_response["emotionPredictions"][0]["emotion"]
+    try:
+        formatted_response = response.json()
+        emotions = formatted_response["emotionPredictions"][0]["emotion"]
+    except (KeyError, ValueError, TypeError):
+        return none_result
     anger = emotions["anger"]
     disgust = emotions["disgust"]
     fear = emotions["fear"]

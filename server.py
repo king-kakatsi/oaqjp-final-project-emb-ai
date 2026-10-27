@@ -9,8 +9,13 @@ app = Flask(__name__)
 def emot_detector():
     """Handle emotion detection request from the web UI."""
     text_to_analyse = request.args.get("textToAnalyze")
-    response = emotion_detector(text_to_analyse)
-    if response["dominant_emotion"] is None:
+    if not text_to_analyse:
+        return "Invalid text! Please try again!"
+    try:
+        response = emotion_detector(text_to_analyse)
+    except Exception:  # pylint: disable=broad-exception-caught
+        return "Invalid text! Please try again!"
+    if response is None or response["dominant_emotion"] is None:
         return "Invalid text! Please try again!"
     return (
         "For the given statement, the system response is "
