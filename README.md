@@ -1,4 +1,4 @@
-# Emotion Detection Web App
+# Final Project — Emotion Detection Web App
 
 AI-based web app that performs analytics on customer feedback: it detects
 the dominant emotion (**anger, disgust, fear, joy, sadness**) expressed in a
