@@ -13,9 +13,12 @@ def emot_detector():
         return "Invalid text! Please try again!"
     try:
         response = emotion_detector(text_to_analyse)
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception as exc:  # pylint: disable=broad-exception-caught
+        print(f"[emotionDetector] Watson call failed: {exc}")
         return "Invalid text! Please try again!"
     if response is None or response["dominant_emotion"] is None:
+        print("[emotionDetector] Watson returned no result "
+              "(invalid text or service unreachable)")
         return "Invalid text! Please try again!"
     return (
         "For the given statement, the system response is "
