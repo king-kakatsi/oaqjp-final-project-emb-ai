@@ -1,5 +1,6 @@
 """Flask web server exposing emotion detection to the frontend."""
 from flask import Flask, render_template, request
+import requests
 from EmotionDetection.emotion_detection import emotion_detector
 
 app = Flask(__name__)
@@ -13,8 +14,8 @@ def emot_detector():
         return "Invalid text! Please try again!"
     try:
         response = emotion_detector(text_to_analyse)
-    except Exception as exc:  # pylint: disable=broad-exception-caught
-        print(f"[emotionDetector] Watson call failed: {exc}")
+    except (requests.exceptions.RequestException, KeyError, TypeError):
+        print("[emotionDetector] Watson call failed")
         return "Invalid text! Please try again!"
     if response is None or response["dominant_emotion"] is None:
         print("[emotionDetector] Watson returned no result "
